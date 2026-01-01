@@ -22,6 +22,7 @@ const display = document.querySelector(".display");
 const calculator = document.querySelector(".calculator");
 
 let secondNum = false;
+let currentAns = false;
 let num1 = "";
 let num2 = "";
 let operator = "";
@@ -36,10 +37,14 @@ calculator.addEventListener("click", (e) => {
     if (e.target.matches(".number")) {
         if (secondNum) {
             num2 += e.target.dataset.value;
-        } else {
+            display.textContent += e.target.dataset.value;
+        } else if (!(currentAns)) {
             num1 += e.target.dataset.value;
+            display.textContent += e.target.dataset.value;
+        } else {
+            updateDisplay(e.target.dataset.value);
+            currentAns = false;
         }
-        display.textContent += e.target.dataset.value;
     } else if (e.target.matches(".operator")) {
         if (secondNum) {
             let answer = operate(parseInt(num1), parseInt(num2), operator);
@@ -47,14 +52,17 @@ calculator.addEventListener("click", (e) => {
         } else {
             secondNum = true;
         }
+        currentAns = false;
         operator = e.target.dataset.op;
         display.textContent += e.target.textContent.trim();
     } else if (e.target.matches(".equals")) {
         let answer = operate(parseInt(num1), parseInt(num2), operator);
         updateDisplay(answer);
         secondNum = false;
+        currentAns = true;
     } else if (e.target.matches(".clear")) {
         updateDisplay("");
         secondNum = false;
+        currentAns = false;
     }
 });
